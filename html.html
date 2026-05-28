@@ -1,0 +1,963 @@
+ <!DOCTYPE html>
+<html lang="ky">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Клиника Аксон — Ош</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a56db;--blue-dark:#1241a8;--blue-light:#e8f0fe;
+  --red:#c0392b;--red-light:#fdecea;
+  --teal:#0891b2;--green:#16a34a;
+  --bg:#f0f4ff;--card:#fff;--text:#1e2a4a;--muted:#6b7a99;
+  --border:rgba(26,86,219,0.12);--radius:16px;
+  --shadow:0 4px 24px rgba(26,86,219,0.10);
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{text-decoration:none;color:inherit}
+
+/* LAYOUT */
+#app{display:flex;min-height:100vh}
+#sidebar{width:260px;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform 0.3s}
+#main{margin-left:260px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+@media(max-width:768px){
+  #sidebar{transform:translateX(-100%)}
+  #sidebar.open{transform:translateX(0)}
+  #main{margin-left:0}
+  .mobile-header{display:flex!important}
+}
+.mobile-header{display:none;align-items:center;gap:12px;background:var(--blue);padding:14px 16px;color:#fff;position:sticky;top:0;z-index:100}
+.hamburger{background:rgba(255,255,255,0.15);border:none;border-radius:8px;width:36px;height:36px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:150}
+.overlay.show{display:block}
+
+/* SIDEBAR */
+.sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.sidebar-logo img{width:44px;height:44px;border-radius:50%;object-fit:cover;border:2px solid var(--blue-light)}
+.sidebar-logo-text h2{font-size:16px;font-weight:700;color:var(--text)}
+.sidebar-logo-text p{font-size:11px;color:var(--muted)}
+.sidebar-nav{flex:1;padding:12px 10px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:500;color:var(--muted);margin-bottom:2px;transition:all 0.15s;border:none;background:none;width:100%;text-align:left}
+.nav-item:hover{background:var(--blue-light);color:var(--blue)}
+.nav-item.active{background:var(--blue);color:#fff}
+.nav-item i{font-size:20px}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border)}
+
+/* USER BAR */
+.user-bar{padding:8px 14px;border-radius:12px;display:flex;align-items:center;gap:10px;cursor:pointer;background:var(--blue-light);transition:0.15s}
+.user-bar:hover{background:#dbeafe}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.user-info{flex:1}
+.user-info .uname{font-size:13px;font-weight:700;color:var(--text)}
+.user-info .uemail{font-size:11px;color:var(--muted)}
+
+/* SCREENS */
+.screen{display:none;flex:1;padding:28px 32px;animation:fadeIn 0.25s ease}
+.screen.active{display:block}
+@media(max-width:768px){.screen{padding:16px}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* HERO */
+.hero-banner{background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue) 60%,var(--teal) 100%);border-radius:20px;padding:32px 28px;color:#fff;display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;position:relative;overflow:hidden}
+.hero-banner::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:rgba(255,255,255,0.05);border-radius:50%}
+.hero-banner::after{content:'';position:absolute;right:40px;bottom:-60px;width:150px;height:150px;background:rgba(255,255,255,0.04);border-radius:50%}
+.hero-text h1{font-size:26px;font-weight:800;margin-bottom:6px}
+.hero-text p{font-size:14px;opacity:0.85}
+.hero-logo{width:80px;height:80px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,0.2);flex-shrink:0;overflow:hidden}
+.hero-logo img{width:72px;height:72px;object-fit:contain;border-radius:50%}
+@media(max-width:480px){.hero-banner{flex-direction:column;gap:16px;text-align:center}.hero-text h1{font-size:20px}}
+
+/* CARDS */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:#fff;border-radius:var(--radius);padding:20px;border:1px solid var(--border);display:flex;align-items:center;gap:14px}
+.stat-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0}
+.stat-title{font-size:12px;color:var(--muted);font-weight:500;margin-bottom:3px}
+.stat-val{font-size:22px;font-weight:800;color:var(--text)}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-size:18px;font-weight:800;color:var(--text)}
+.see-all{font-size:13px;color:var(--blue);font-weight:600;cursor:pointer;border:none;background:none}
+
+/* DOCTORS */
+.doctors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.doctor-card{background:#fff;border-radius:var(--radius);padding:20px;border:1px solid var(--border);text-align:center;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s}
+.doctor-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.doc-avatar{width:72px;height:72px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-weight:800;font-size:22px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
+.doc-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.3}
+.spec-badge{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:10px}
+.stars{color:#f4a61b;font-size:13px}
+.book-btn{margin-top:12px;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;width:100%;transition:opacity 0.15s}
+.book-btn:hover{opacity:0.88}
+
+/* APPOINTMENT/REGISTER FORM */
+.form-card{background:#fff;border-radius:var(--radius);padding:28px;border:1px solid var(--border);max-width:560px}
+.form-title{font-size:20px;font-weight:800;color:var(--text);margin-bottom:4px}
+.form-sub{font-size:14px;color:var(--muted);margin-bottom:24px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:540px){.form-row{grid-template-columns:1fr}}
+.form-group{margin-bottom:18px}
+.form-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:7px;display:block}
+.form-input,.form-select{width:100%;background:#f8faff;border:1.5px solid var(--border);border-radius:12px;padding:12px 16px;font-size:15px;color:var(--text);outline:none;transition:border-color 0.2s;font-family:inherit}
+.form-input:focus,.form-select:focus{border-color:var(--blue);background:#fff}
+.form-select{appearance:none;cursor:pointer}
+.select-wrap{position:relative}
+.select-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.primary-btn{background:var(--blue);color:#fff;border:none;border-radius:12px;padding:14px 24px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity 0.15s,transform 0.1s;width:100%;font-family:inherit}
+.primary-btn:hover{opacity:0.9}
+.primary-btn:active{transform:scale(0.99)}
+.success-wrap{text-align:center;padding:32px 20px}
+.success-wrap .big-check{font-size:72px;margin-bottom:12px}
+.success-wrap h2{font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px}
+.success-wrap .confirmed-name{font-size:20px;font-weight:700;color:var(--blue);margin-bottom:4px}
+.success-wrap p{color:var(--muted);font-size:14px;margin-bottom:20px}
+.info-box{background:var(--blue-light);border-radius:12px;padding:16px;margin-bottom:12px;text-align:left}
+.info-box .ibl{font-size:11px;color:var(--muted);margin-bottom:3px}
+.info-box .ibv{font-size:14px;font-weight:700;color:var(--blue)}
+
+/* AI CHAT */
+.chat-container{display:flex;flex-direction:column;height:calc(100vh - 120px);max-width:800px}
+@media(max-width:768px){.chat-container{height:calc(100vh - 70px)}}
+.chat-header{background:#fff;border-radius:16px 16px 0 0;padding:16px 20px;border:1px solid var(--border);border-bottom:none;display:flex;align-items:center;gap:12px}
+.ai-avatar-wrap{position:relative}
+.ai-avatar{width:44px;height:44px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.ai-avatar img{width:40px;height:40px;object-fit:contain;border-radius:50%}
+.online-dot{position:absolute;bottom:0;right:0;width:12px;height:12px;background:#22c55e;border-radius:50%;border:2px solid #fff}
+.chat-messages{flex:1;overflow-y:auto;background:#fff;border:1px solid var(--border);border-top:none;border-bottom:none;padding:16px;display:flex;flex-direction:column;gap:14px}
+.msg-row{display:flex;gap:10px;align-items:flex-end}
+.msg-row.user{flex-direction:row-reverse}
+.msg-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
+.msg-av.ai-av{background:var(--blue)}
+.msg-av.ai-av img{width:30px;height:30px;object-fit:contain;border-radius:50%}
+.msg-av.user-av{background:#e0e7ff;font-size:14px;font-weight:700;color:var(--blue)}
+.bubble{max-width:78%;padding:11px 16px;border-radius:18px;font-size:14px;line-height:1.6}
+.msg-row.ai .bubble{background:#f0f4ff;color:var(--text);border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg-row.user .bubble{background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+.msg-time{font-size:10px;color:var(--muted);margin-top:4px}
+.typing{display:flex;gap:5px;padding:6px 2px}
+.typing span{width:8px;height:8px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}
+.chat-input-area{background:#fff;border:1px solid var(--border);border-top:none;border-radius:0 0 16px 16px;padding:12px 14px}
+.quick-chips{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.chip{background:#f0f4ff;border:1.5px solid var(--blue);color:var(--blue);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.chip:hover{background:var(--blue);color:#fff}
+.input-row{display:flex;gap:10px;align-items:flex-end}
+.chat-textarea{flex:1;background:#f8faff;border:1.5px solid var(--border);border-radius:14px;padding:11px 16px;font-size:14px;resize:none;outline:none;max-height:120px;font-family:inherit;color:var(--text)}
+.chat-textarea:focus{border-color:var(--blue);background:#fff}
+.send-btn{width:44px;height:44px;background:var(--blue);border:none;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform 0.15s}
+.send-btn:hover{opacity:0.9}
+.send-btn:active{transform:scale(0.92)}
+.send-btn i{font-size:20px}
+
+/* ABOUT */
+.about-hero{background:linear-gradient(135deg,var(--blue-dark),var(--blue),var(--teal));border-radius:20px;padding:36px 28px;color:#fff;display:flex;gap:24px;align-items:center;margin-bottom:24px}
+.about-hero img{width:100px;height:100px;border-radius:50%;border:4px solid rgba(255,255,255,0.3);object-fit:contain;background:#fff;padding:4px;flex-shrink:0}
+.about-hero h2{font-size:28px;font-weight:900}
+.about-hero p{opacity:0.85;font-size:14px;margin-top:4px}
+@media(max-width:540px){.about-hero{flex-direction:column;text-align:center}.about-hero img{margin:0 auto}}
+.about-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:20px}
+.about-card{background:#fff;border-radius:var(--radius);padding:20px;border:1px solid var(--border)}
+.about-card-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.about-icon{width:44px;height:44px;border-radius:12px;background:var(--blue-light);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.about-card h4{font-size:15px;font-weight:700;color:var(--text)}
+.about-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.hours-table{width:100%;border-collapse:collapse}
+.hours-table td{padding:7px 4px;font-size:13px;border-bottom:1px solid var(--border)}
+.hours-table td:first-child{color:var(--muted)}
+.hours-table td:last-child{font-weight:600;text-align:right}
+.service-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.s-chip{background:var(--blue-light);color:var(--blue);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600}
+.google-map-btn{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid #dadce0;border-radius:30px;padding:14px 20px;font-size:14px;font-weight:600;color:#3c4043;cursor:pointer;margin-bottom:16px;transition:box-shadow 0.2s;width:fit-content}
+.google-map-btn:hover{box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+.g-logo{font-weight:900;font-size:18px;letter-spacing:0}
+
+/* AUTH SCREEN */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#e8f0fe 0%,#f0f4ff 50%,#e0f2fe 100%)}
+.auth-card{background:#fff;border-radius:24px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(26,86,219,0.12);text-align:center}
+.auth-logo{width:90px;height:90px;border-radius:50%;border:3px solid var(--blue-light);overflow:hidden;margin:0 auto 16px;background:#f8faff;display:flex;align-items:center;justify-content:center}
+.auth-logo img{width:82px;height:82px;object-fit:contain;border-radius:50%}
+.auth-card h1{font-size:24px;font-weight:900;color:var(--text);margin-bottom:4px}
+.auth-card .auth-sub{font-size:14px;color:var(--muted);margin-bottom:28px}
+.google-sign-btn{display:flex;align-items:center;justify-content:center;gap:12px;background:#fff;border:1.5px solid #dadce0;border-radius:12px;padding:14px 20px;font-size:15px;font-weight:600;color:#3c4043;cursor:pointer;width:100%;margin-bottom:12px;transition:box-shadow 0.2s}
+.google-sign-btn:hover{box-shadow:0 2px 10px rgba(0,0,0,0.12)}
+.google-icon{display:flex;gap:0;font-size:20px;font-weight:900}
+.or-divider{display:flex;align-items:center;gap:10px;margin:16px 0;color:var(--muted);font-size:13px}
+.or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.phone-group{display:flex;gap:8px;margin-bottom:12px}
+.country-code{background:#f8faff;border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:15px;font-weight:600;color:var(--text);width:90px;flex-shrink:0}
+.google-accounts-dropdown{background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.12);padding:8px;margin-bottom:12px;display:none;animation:fadeIn 0.2s}
+.google-accounts-dropdown.show{display:block}
+.g-account-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;cursor:pointer;transition:background 0.15s}
+.g-account-item:hover{background:#f8faff}
+.g-acc-avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0}
+.g-acc-info .g-acc-name{font-size:14px;font-weight:600;color:var(--text)}
+.g-acc-info .g-acc-email{font-size:12px;color:var(--muted)}
+.add-account-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;cursor:pointer;transition:background 0.15s;border-top:1px solid var(--border);margin-top:4px}
+.add-account-item:hover{background:#f8faff}
+
+/* PROFILE */
+.profile-card{background:#fff;border-radius:var(--radius);padding:28px;border:1px solid var(--border);max-width:480px}
+.profile-top{display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.profile-pic{width:72px;height:72px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;overflow:hidden;flex-shrink:0}
+.profile-pic img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-size:20px;font-weight:800;color:var(--text)}
+.profile-email{font-size:13px;color:var(--muted)}
+.profile-row{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);font-size:14px}
+.profile-row i{font-size:20px;color:var(--blue)}
+.profile-row span{color:var(--muted);font-size:13px;display:block}
+.logout-btn{display:flex;align-items:center;gap:10px;padding:14px;color:var(--red);font-size:14px;font-weight:600;cursor:pointer;border:none;background:none;margin-top:8px;border-radius:10px;width:100%;transition:background 0.15s}
+.logout-btn:hover{background:var(--red-light)}
+.logout-btn i{font-size:20px}
+
+/* PAGE TITLE */
+.page-header{margin-bottom:24px}
+.page-header h2{font-size:24px;font-weight:900;color:var(--text)}
+.page-header p{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* APPOINTMENT LIST */
+.appt-list{display:flex;flex-direction:column;gap:12px;max-width:600px}
+.appt-card{background:#fff;border-radius:var(--radius);padding:18px 20px;border:1px solid var(--border);display:flex;align-items:center;gap:16px}
+.appt-date{background:var(--blue);color:#fff;border-radius:12px;padding:10px 14px;text-align:center;min-width:56px;flex-shrink:0}
+.appt-date .aday{font-size:22px;font-weight:800;line-height:1}
+.appt-date .amon{font-size:11px;font-weight:600;opacity:0.85}
+.appt-info h4{font-size:14px;font-weight:700;color:var(--text)}
+.appt-info p{font-size:12px;color:var(--muted);margin-top:2px}
+.appt-status{margin-left:auto;background:#dcfce7;color:#16a34a;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;flex-shrink:0}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+<div class="auth-wrap">
+<div class="auth-card" id="auth-main">
+  <div class="auth-logo"><img src=" https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="Аксон логотиби" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=font-size:32px;font-weight:900;color:#1a56db>А</span>'"></div>
+  <h1>Клиника Аксон</h1>
+  <p class="auth-sub">Ош шаары — Саламаттыкты коргоо борбору</p>
+
+  <!-- Google button -->
+  
+  <!-- Google register form -->
+  <div id="google-reg-form" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <button onclick="document.getElementById('google-reg-form').style.display='none';document.getElementById('g-dropdown').classList.add('show')" style="background:none;border:none;cursor:pointer;color:var(--blue);font-size:20px;display:flex;"><i class="ti ti-arrow-left"></i></button>
+      <span style="font-size:15px;font-weight:700">Жаңы аккаунт</span>
+    </div>
+    <div class="form-group"><label class="form-label">Аты-жөнүңүз</label><input type="text" class="form-input" id="new-name" placeholder="Толук аты-жөнүңүз"></div>
+    <div class="form-group"><label class="form-label">Gmail дареги</label><input type="email" class="form-input" id="new-email" placeholder="example@gmail.com"></div>
+    <button class="primary-btn" onclick="registerGoogleAccount()">Катталуу</button>
+  </div>
+
+  
+
+  <!-- Phone login -->
+  <div id="phone-login">
+    <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:10px;">Телефон менен кирүү</div>
+    <div class="form-group">
+      <label class="form-label">Аты-жөнүңүз</label>
+      <input type="text" class="form-input" id="phone-name-input" placeholder="Аты жана фамилияңыз">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Телефон номери</label>
+      <div class="phone-group">
+        <div class="country-code">🇰🇬 +996</div>
+        <input type="tel" class="form-input" id="phone-input" placeholder="700 000 000" style="flex:1" maxlength="9">
+      </div>
+    </div>
+    <button class="primary-btn" onclick="sendSmsCode()">SMS код жөнөтүү</button>
+  </div>
+</div>
+
+<!-- OTP verification card -->
+<div class="auth-card" id="otp-card" style="display:none;">
+  <div class="auth-logo"><img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="Аксон" onerror="this.style.display='none'"></div>
+  <h1 style="font-size:20px;">SMS код</h1>
+  <p class="auth-sub" id="otp-subtitle">Номерге 4 орундуу код жиберилди</p>
+  <div style="background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:14px;margin-bottom:20px;text-align:left;">
+    <div style="font-size:12px;color:#16a34a;font-weight:600;margin-bottom:4px;">💬 SMS жиберилди</div>
+    <div id="otp-demo-code" style="font-size:13px;color:#166534;"></div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">4 орундуу кодду жазыңыз</label>
+    <input type="text" class="form-input" id="otp-input" placeholder="0000" maxlength="4" style="font-size:28px;font-weight:700;text-align:center;letter-spacing:10px;" oninput="this.value=this.value.replace(/\D/g,'')">
+  </div>
+  <div id="otp-error" style="display:none;background:var(--red-light);color:var(--red);border-radius:10px;padding:11px 14px;font-size:13px;font-weight:600;margin-bottom:14px;">❌ Код туура эмес! Кайра аракет кылыңыз.</div>
+  <button class="primary-btn" onclick="verifyOtp()">Ырастоо</button>
+  <button style="width:100%;border:none;background:none;color:var(--muted);font-size:13px;cursor:pointer;margin-top:12px;padding:6px" onclick="backToAuth()">← Артка кайтуу</button>
+  <button style="width:100%;border:none;background:none;color:var(--blue);font-size:13px;cursor:pointer;margin-top:4px;padding:6px" onclick="resendCode()">Кодду кайра жөнөтүү</button>
+</div>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none;">
+<div id="app">
+  <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-logo">
+      <img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="Аксон" onerror="this.style.display='none'">
+      <div class="sidebar-logo-text"><h2>Клиника Аксон</h2><p>Ош шаары</p></div>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" data-screen="home" onclick="navigate('home')"><i class="ti ti-home-2" aria-hidden="true"></i> Башкы бет</button>
+      <button class="nav-item" data-screen="doctors" onclick="navigate('doctors')"><i class="ti ti-stethoscope" aria-hidden="true"></i> Дарыгерлер</button>
+      <button class="nav-item" data-screen="appointment" onclick="navigate('appointment')"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Жазылуу</button>
+      <button class="nav-item" data-screen="my-appointments" onclick="navigate('my-appointments')"><i class="ti ti-clipboard-list" aria-hidden="true"></i> Менин жазылуularым</button>
+      <button class="nav-item" data-screen="ai" onclick="navigate('ai')"><i class="ti ti-robot" aria-hidden="true"></i> AI Дарыгер</button>
+      <button class="nav-item" data-screen="about" onclick="navigate('about')"><i class="ti ti-building-hospital" aria-hidden="true"></i> Клиника жөнүндө</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-bar" onclick="navigate('profile')">
+        <div class="user-avatar" id="sb-avatar">?</div>
+        <div class="user-info">
+          <div class="uname" id="sb-name">Жүктөлүүдө...</div>
+          <div class="uemail" id="sb-email"></div>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--muted);font-size:16px" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div id="main">
+    <!-- Mobile header -->
+    <div class="mobile-header">
+      <button class="hamburger" onclick="openSidebar()" aria-label="Меню"><i class="ti ti-menu-2" aria-hidden="true"></i></button>
+      <img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" style="width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);object-fit:contain;background:#fff" alt="Аксон">
+      <span style="font-size:17px;font-weight:700;flex:1">Клиника Аксон</span>
+      <button class="hamburger" onclick="navigate('profile')" aria-label="Профиль"><i class="ti ti-user" aria-hidden="true"></i></button>
+    </div>
+
+    <!-- HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <h1 id="hero-greeting">Саламатсызбы!</h1>
+          <p>Аксон клиникасына кош келиңиз — Ош шаары</p>
+        </div>
+        <div class="hero-logo"><img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="Аксон"></div>
+      </div>
+      <div class="cards-grid">
+        <div class="stat-card"><div class="stat-icon" style="background:#e8f0fe">🩺</div><div><div class="stat-title">Дарыгерлер</div><div class="stat-val">4</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#dcfce7">💊</div><div><div class="stat-title">Адистиктер</div><div class="stat-val">7+</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#fef3c7">⭐</div><div><div class="stat-title">Рейтинг</div><div class="stat-val">5.0</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#fee2e2">❤️</div><div><div class="stat-title">Жылдан бери</div><div class="stat-val" id="years-count">—</div></div></div>
+      </div>
+      <div class="section-header"><div class="section-title">Биздин дарыгерлер</div><button class="see-all" onclick="navigate('doctors')">Баарын көр →</button></div>
+      <div class="doctors-grid">
+        <div class="doctor-card"><div class="doc-avatar">ЖГ</div><div class="doc-name">Жанибекова Гулдана Жанибековна</div><span class="spec-badge">Невролог</span><div class="stars">★★★★★ 5.0</div><button class="book-btn" onclick="bookDoctor('Жанибекова Гулдана — Невролог')">Жазылуу</button></div>
+        <div class="doctor-card"><div class="doc-avatar">КС</div><div class="doc-name">Кулматов Суймонкул</div><span class="spec-badge">Ревматолог / Кардиолог</span><div class="stars">★★★★★ 4.9</div><button class="book-btn" onclick="bookDoctor('Кулматов Суймонкул — Ревматолог/Кардиолог')">Жазылуу</button></div>
+        <div class="doctor-card"><div class="doc-avatar">КМ</div><div class="doc-name">Курбанов Мыктарбек</div><span class="spec-badge">Терапевт</span><div class="stars">★★★★☆ 4.8</div><button class="book-btn" onclick="bookDoctor('Курбанов Мыктарбек — Терапевт')">Жазылуу</button></div>
+        <div class="doctor-card"><div class="doc-avatar">МА</div><div class="doc-name">Маматов Айбек Мухтарович</div><span class="spec-badge">Кардиолог</span><div class="stars">★★★★★ 5.0</div><button class="book-btn" onclick="bookDoctor('Маматов Айбек — Кардиолог')">Жазылуу</button></div>
+      </div>
+    </div>
+
+    <!-- DOCTORS -->
+    <div class="screen" id="screen-doctors">
+      <div class="page-header"><h2>Клиниканын дарыгерлери</h2><p>4 адис дарыгер кызмат көрсөтөт</p></div>
+      <div class="doctors-grid">
+        <div class="doctor-card"><div class="doc-avatar">ЖГ</div><div class="doc-name">Жанибекова Гулдана Жанибековна</div><span class="spec-badge">Невролог</span><div class="stars">★★★★★ 5.0</div><div style="font-size:12px;color:var(--muted);margin:8px 0">Дүйшөмбү – Жума · 08:00–17:00</div><button class="book-btn" onclick="bookDoctor('Жанибекова Гулдана — Невролог')">Жазылуу</button></div>
+        <div class="doctor-card"><div class="doc-avatar">КС</div><div class="doc-name">Кулматов Суймонкул</div><span class="spec-badge">Ревматолог / Кардиолог</span><div class="stars">★★★★★ 4.9</div><div style="font-size:12px;color:var(--muted);margin:8px 0">Дүйшөмбү – Жума · 08:00–17:00</div><button class="book-btn" onclick="bookDoctor('Кулматов Суймонкул — Ревматолог/Кардиолог')">Жазылуу</button></div>
+        <div class="doctor-card"><div class="doc-avatar">КМ</div><div class="doc-name">Курбанов Мыктарбек</div><span class="spec-badge">Терапевт</span><div class="stars">★★★★☆ 4.8</div><div style="font-size:12px;color:var(--muted);margin:8px 0">Дүйшөмбү – Жума · 08:00–17:00</div><button class="book-btn" onclick="bookDoctor('Курбанов Мыктарбек — Терапевт')">Жазылуу</button></div>
+        <div class="doctor-card"><div class="doc-avatar">МА</div><div class="doc-name">Маматов Айбек Мухтарович</div><span class="spec-badge">Кардиолог</span><div class="stars">★★★★★ 5.0</div><div style="font-size:12px;color:var(--muted);margin:8px 0">Дүйшөмбү – Жума · 08:00–17:00</div><button class="book-btn" onclick="bookDoctor('Маматов Айбек — Кардиолог')">Жазылуу</button></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENT -->
+    <div class="screen" id="screen-appointment">
+      <div class="page-header"><h2>Дарыгерге жазылуу</h2><p>Ыңгайлуу убакытты тандаңыз</p></div>
+      <div id="appt-form-wrap">
+        <div class="form-card">
+          <div class="form-title">Жазылуу формасы</div>
+          <div class="form-sub">Бардык маалыматты туура жазыңыз</div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Аты-жөнүңүз *</label><input type="text" class="form-input" id="r-name" placeholder="Толук аты-жөнүңүз"></div>
+            <div class="form-group"><label class="form-label">Телефон *</label><input type="tel" class="form-input" id="r-phone" placeholder="+996 700 000 000"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Дарыгер *</label><div class="select-wrap"><select class="form-select" id="r-doctor"><option value="">— Тандаңыз —</option><option>Жанибекова Гулдана — Невролог</option><option>Кулматов Суймонкул — Ревматолог/Кардиолог</option><option>Курбанов Мыктарбек — Терапевт</option><option>Маматов Айбек — Кардиолог</option></select></div></div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Күнү *</label><input type="date" class="form-input" id="r-date"></div>
+            <div class="form-group"><label class="form-label">Убактысы *</label><div class="select-wrap"><select class="form-select" id="r-time"><option value="">— Тандаңыз —</option><option>08:00</option><option>09:00</option><option>10:00</option><option>11:00</option><option>12:00</option><option>14:00</option><option>15:00</option><option>16:00</option></select></div></div>
+          </div>
+          <div class="form-group"><label class="form-label">Даттануу (кыскача)</label><input type="text" class="form-input" id="r-complaint" placeholder="Мисалы: Баш ооруп жатат..."></div>
+          <button class="primary-btn" onclick="submitAppointment()">✓ Жазылуу</button>
+        </div>
+      </div>
+      <div id="appt-success" style="display:none;">
+        <div class="form-card">
+          <div class="success-wrap">
+            <div class="big-check">✅</div>
+            <h2>Ийгиликтүү жазылдыңыз!</h2>
+            <div class="confirmed-name" id="s-name"></div>
+            <p id="s-detail"></p>
+            <div class="info-box"><div class="ibl">Клиника дареги</div><div class="ibv">мкр. Толойкон, 23А/1, Ош</div></div>
+            <div class="info-box"><div class="ibl">Иш убактысы</div><div class="ibv">Дүйш–Жума 08:00–17:00 · Ишемби 09:00–15:00</div></div>
+            <button class="primary-btn" style="margin-top:16px" onclick="resetAppt()">Жаңы жазылуу</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MY APPOINTMENTS -->
+    <div class="screen" id="screen-my-appointments">
+      <div class="page-header"><h2>Менин жазылуularым</h2><p>Учурдагы жана өткөн жазылуulар</p></div>
+      <div class="appt-list" id="appt-list">
+        <div style="color:var(--muted);font-size:14px;padding:20px 0">Азырынча жазылуu жок. Дарыгерге жазылыңыз!</div>
+      </div>
+    </div>
+
+    <!-- AI CHAT -->
+    <div class="screen" id="screen-ai">
+      <div class="page-header"><h2>AI Дарыгер</h2><p>Клиника жана ден соолук тууралуу суроолорго жооп берем</p></div>
+      <div class="chat-container">
+        <div class="chat-header">
+          <div class="ai-avatar-wrap">
+            <div class="ai-avatar"><img src=" https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="Аксон AI"></div>
+            <div class="online-dot"></div>
+          </div>
+          <div>
+            <div style="font-size:15px;font-weight:700;color:var(--text)">Аксон AI Жардамчы</div>
+            <div style="font-size:12px;color:#22c55e;font-weight:600">● Онлайн</div>
+          </div>
+          <button onclick="clearChat()" style="margin-left:auto;background:none;border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:12px;color:var(--muted);cursor:pointer;font-family:inherit">Тазалоо</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <div class="msg-row ai">
+            <div class="msg-av ai-av"><img src=" https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="AI"></div>
+            <div><div class="bubble">Саламатсызбы! 👋 Мен Аксон клиникасынын AI жардамчысымын. Клиника жөнүндө же ден соолук маселелери боюнча суроолоруңузга жооп берем. Эмне кызыктырат?</div><div class="msg-time">азыр</div></div>
+          </div>
+        </div>
+        <div class="chat-input-area">
+          <div class="quick-chips">
+            <button class="chip" onclick="sendChip('Кайсы дарыгерлер бар?')">Дарыгерлер</button>
+            <button class="chip" onclick="sendChip('Кардиолог жөнүндө айт')">Кардиолог</button>
+            <button class="chip" onclick="sendChip('Иш убактысы кандай?')">Убакыт</button>
+            <button class="chip" onclick="sendChip('Клиника кайда жайгашкан?')">Дарек</button>
+            <button class="chip" onclick="sendChip('Кандай кызматтар бар?')">Кызматтар</button>
+            <button class="chip" onclick="sendChip('ЭКГ жасалабы?')">ЭКГ</button>
+          </div>
+          <div class="input-row">
+            <textarea class="chat-textarea" id="chat-input" rows="1" placeholder="Суроо жазыңыз..."></textarea>
+            <button class="send-btn" onclick="sendMessage()" aria-label="Жибер"><i class="ti ti-send" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="screen" id="screen-about">
+      <div class="about-hero">
+        <img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="Аксон логотиби">
+        <div>
+          <h2>Клиника «Аксон»</h2>
+          <p>Ош шаары — Бүт үй-бүлөгө медициналык жардам</p>
+          <p style="margin-top:8px;font-size:13px;opacity:0.7">мкр. Толойкон, 23А/1</p>
+        </div>
+      </div>
+
+      <a class="google-map-btn" href="https://maps.google.com/?q=Клиника+Аксон+мкр+Толойкон+23А/1+Ош" target="_blank">
+        <span style="font-size:20px;font-weight:900"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span>
+        Google Картада ачуу
+        <i class="ti ti-external-link" aria-hidden="true"></i>
+      </a>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">📍</div><h4>Дарек</h4></div>
+          <p>мкр. Толойкон, 23А/1, Ош шаары</p>
+          <p style="margin-top:8px"><strong>Автобус:</strong> №6, 8, 9, 43</p>
+          <p><strong>Маршрутка:</strong> №12, 101, 106, 112, 127, 129, 141, 146</p>
+          <p><strong>Аялдама:</strong> «Микрорайон Толойкон»</p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">⏰</div><h4>Иш убактысы</h4></div>
+          <table class="hours-table">
+            <tr><td>Дүйшөмбү – Жума</td><td>08:00 – 17:00</td></tr>
+            <tr><td>Ишемби</td><td>09:00 – 15:00</td></tr>
+            <tr><td>Жекшемби</td><td>Эс алуу</td></tr>
+          </table>
+          <p style="margin-top:10px;font-size:12px;color:var(--muted)">Кабыл алуу алдын ала жазылуу менен гана</p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">📅</div><h4>Клиника тарыхы</h4></div>
+          <p>«Аксон» медициналык борбору Ош шаарында бир нече жылдан бери иштеп келет. Борбор пациенттерге жогорку сапаттагы медициналык жардам берүүгө адистешкен.</p>
+          <p style="margin-top:8px"><strong id="years-text"></strong> жыл бою ишенимдүү кызмат</p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">🏥</div><h4>Клиника жөнүндө</h4></div>
+          <p>«Аксон» — терапевтикалык, неврологиялык, кардиологиялык, гинекологиялык, ревматологиялык, эндокринологиялык жана урологиялык оорулуларга жардам берүүчү борбор.</p>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">💊</div><h4>Адистиктер</h4></div>
+          <div class="service-chips">
+            <span class="s-chip">Кардиология</span><span class="s-chip">Неврология</span><span class="s-chip">Ревматология</span><span class="s-chip">Терапия</span><span class="s-chip">Гинекология</span><span class="s-chip">Эндокринология</span><span class="s-chip">Урология</span>
+          </div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">🔬</div><h4>Диагностика</h4></div>
+          <div class="service-chips">
+            <span class="s-chip">ЭКГ</span><span class="s-chip">ЭхоКГ</span><span class="s-chip">УЗИ</span><span class="s-chip">Иглотерапия</span><span class="s-chip">Мануалдык терапия</span><span class="s-chip">Лабораториялык анализ</span>
+          </div>
+        </div>
+        <div class="about-card">
+          <div class="about-card-head"><div class="about-icon">💳</div><h4>Маалымат</h4></div>
+          <p>Төлөм: нак акча</p>
+          <p style="margin-top:6px">Кабыл алуу: чоңдор гана</p>
+          <p style="margin-top:6px">Сурам: алдын ала жазылуу</p>
+        </div>
+      </div>
+      <button class="primary-btn" style="max-width:300px;margin:0 0 32px" onclick="navigate('appointment')">📅 Дарыгерге жазылуу</button>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="screen" id="screen-profile">
+      <div class="page-header"><h2>Профиль</h2><p>Аккаунт маалыматтары</p></div>
+      <div class="profile-card">
+        <div class="profile-top">
+          <div class="profile-pic" id="profile-pic">?</div>
+          <div>
+            <div class="profile-name" id="profile-name">—</div>
+            <div class="profile-email" id="profile-email">—</div>
+          </div>
+        </div>
+        <div class="profile-row"><i class="ti ti-user" aria-hidden="true"></i><div><span>Аты-жөнү</span><strong id="pf-name">—</strong></div></div>
+        <div class="profile-row"><i class="ti ti-mail" aria-hidden="true"></i><div><span>Email</span><strong id="pf-email">—</strong></div></div>
+        <div class="profile-row"><i class="ti ti-phone" aria-hidden="true"></i><div><span>Телефон</span><strong id="pf-phone">—</strong></div></div>
+        <div class="profile-row"><i class="ti ti-login" aria-hidden="true"></i><div><span>Кирүү ыкмасы</span><strong id="pf-method">—</strong></div></div>
+        <button class="logout-btn" onclick="logout()"><i class="ti ti-logout" aria-hidden="true"></i> Аккаунттан чыгуу</button>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+</div><!-- /main-app -->
+
+<script>
+// ====== STATE ======
+let currentUser = null;
+let appointments = [];
+let chatHistory = [];
+const STORAGE_KEY = 'akson_user_v2';
+const APPT_KEY = 'akson_appts_v2';
+
+// ====== INIT ======
+window.onload = function() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    showApp();
+  } else {
+    document.getElementById('auth-screen').style.display = 'block';
+    document.getElementById('main-app').style.display = 'none';
+  }
+  const savedAppts = localStorage.getItem(APPT_KEY);
+  if (savedAppts) appointments = JSON.parse(savedAppts);
+
+  // Years calc (using 2019 as founding year estimate)
+  const founded = 2019;
+  const years = new Date().getFullYear() - founded;
+  document.querySelectorAll('#years-count').forEach(el => el.textContent = years + '+');
+  const yt = document.getElementById('years-text');
+  if (yt) yt.textContent = years;
+};
+
+function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('main-app').style.display = 'block';
+  updateUserUI();
+  navigate('home');
+}
+
+function updateUserUI() {
+  if (!currentUser) return;
+  const initials = currentUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sb-name').textContent = currentUser.name.split(' ')[0];
+  document.getElementById('sb-email').textContent = currentUser.email || currentUser.phone || '';
+  const av = document.getElementById('sb-avatar');
+  av.textContent = initials;
+  if (currentUser.color) av.style.background = currentUser.color;
+
+  const hn = document.getElementById('hero-greeting');
+  if (hn) hn.textContent = 'Саламатсызбы, ' + currentUser.name.split(' ')[0] + '!';
+
+  document.getElementById('profile-name').textContent = currentUser.name;
+  document.getElementById('profile-email').textContent = currentUser.email || currentUser.phone || '';
+  document.getElementById('pf-name').textContent = currentUser.name;
+  document.getElementById('pf-email').textContent = currentUser.email || '—';
+  document.getElementById('pf-phone').textContent = currentUser.phone || '—';
+  document.getElementById('pf-method').textContent = currentUser.method || 'Телефон';
+  const pp = document.getElementById('profile-pic');
+  pp.textContent = initials;
+  if (currentUser.color) pp.style.background = currentUser.color;
+
+  // Prefill form
+  const rn = document.getElementById('r-name');
+  if (rn && !rn.value) rn.value = currentUser.name;
+  const rp = document.getElementById('r-phone');
+  if (rp && !rp.value) rp.value = currentUser.phone || '';
+}
+
+// ====== GOOGLE ACCOUNTS STORAGE ======
+const G_ACCOUNTS_KEY = 'akson_google_accounts';
+const COLORS = ['#8B5CF6','#0891b2','#16a34a','#ea580c','#dc2626','#1a56db','#d97706'];
+
+function getGoogleAccounts() {
+  const saved = localStorage.getItem(G_ACCOUNTS_KEY);
+  if (saved) return JSON.parse(saved);
+  // Default demo accounts
+  const defaults = [
+    {name:'Айгерим Асанова', email:'aigerim.asanova@gmail.com', color:'#8B5CF6'},
+    {name:'Бектур Маматов', email:'bektur.mamatov@gmail.com', color:'#0891b2'},
+  ];
+  localStorage.setItem(G_ACCOUNTS_KEY, JSON.stringify(defaults));
+  return defaults;
+}
+
+function saveGoogleAccounts(list) {
+  localStorage.setItem(G_ACCOUNTS_KEY, JSON.stringify(list));
+}
+
+function renderGoogleAccounts() {
+  const accounts = getGoogleAccounts();
+  const list = document.getElementById('g-accounts-list');
+  list.innerHTML = accounts.map((a,i) => {
+    const initials = a.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    return `<div class="g-account-item" onclick="loginWithGoogle('${a.name}','${a.email}','${a.color}')">
+      <div class="g-acc-avatar" style="background:${a.color}">${initials}</div>
+      <div class="g-acc-info"><div class="g-acc-name">${a.name}</div><div class="g-acc-email">${a.email}</div></div>
+      <i class="ti ti-chevron-right" style="margin-left:auto;color:var(--muted);font-size:16px"></i>
+    </div>`;
+  }).join('');
+}
+
+// ====== AUTH ======
+function showGoogleAccounts() {
+  renderGoogleAccounts();
+  document.getElementById('google-reg-form').style.display = 'none';
+  const dd = document.getElementById('g-dropdown');
+  dd.classList.toggle('show');
+}
+
+function showGoogleRegister() {
+  document.getElementById('g-dropdown').classList.remove('show');
+  document.getElementById('google-reg-form').style.display = 'block';
+  document.getElementById('or-div').style.display = 'none';
+  document.getElementById('phone-login').style.display = 'none';
+}
+
+function registerGoogleAccount() {
+  const name = document.getElementById('new-name').value.trim();
+  const email = document.getElementById('new-email').value.trim();
+  if (!name || !email) { alert('Аты жана Gmail дарегин жазыңыз!'); return; }
+  if (!email.includes('@')) { alert('Туура Gmail дарегин жазыңыз!'); return; }
+  const color = COLORS[Math.floor(Math.random()*COLORS.length)];
+  const accounts = getGoogleAccounts();
+  accounts.push({name, email, color});
+  saveGoogleAccounts(accounts);
+  loginWithGoogle(name, email, color);
+}
+
+function loginWithGoogle(name, email, color) {
+  const user = {name, email, color: color||'#1a56db', method:'Google', phone:''};
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  currentUser = user;
+  document.getElementById('g-dropdown').classList.remove('show');
+  showApp();
+}
+
+// ====== SMS OTP ======
+let pendingPhoneUser = null;
+let generatedOtp = null;
+
+function sendSmsCode() {
+  const phone = document.getElementById('phone-input').value.trim();
+  const name = document.getElementById('phone-name-input').value.trim();
+  if (!name) { alert('Аты-жөнүңүздү жазыңыз!'); return; }
+  if (!phone || phone.length < 7) { alert('Телефон номерин туура жазыңыз!'); return; }
+  const fullPhone = '+996' + phone;
+  pendingPhoneUser = {name, phone: fullPhone, email:'', color:'#1a56db', method:'Телефон'};
+  generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
+
+  document.getElementById('otp-subtitle').textContent = fullPhone + ' номерине код жиберилди';
+  document.getElementById('otp-demo-code').innerHTML = `Демо режими: Сиздин кодуңуз — <strong style="font-size:18px;letter-spacing:4px">${generatedOtp}</strong>`;
+  document.getElementById('otp-input').value = '';
+  document.getElementById('otp-error').style.display = 'none';
+  document.getElementById('auth-main').style.display = 'none';
+  document.getElementById('otp-card').style.display = 'block';
+}
+
+function verifyOtp() {
+  const entered = document.getElementById('otp-input').value.trim();
+  if (entered === generatedOtp) {
+    document.getElementById('otp-error').style.display = 'none';
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(pendingPhoneUser));
+    currentUser = pendingPhoneUser;
+    pendingPhoneUser = null;
+    generatedOtp = null;
+    showApp();
+  } else {
+    document.getElementById('otp-error').style.display = 'block';
+    document.getElementById('otp-input').value = '';
+    document.getElementById('otp-input').focus();
+  }
+}
+
+function resendCode() {
+  generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
+  document.getElementById('otp-demo-code').innerHTML = `Демо режими: Жаңы кодуңуз — <strong style="font-size:18px;letter-spacing:4px">${generatedOtp}</strong>`;
+  document.getElementById('otp-error').style.display = 'none';
+  document.getElementById('otp-input').value = '';
+  alert('Жаңы код жиберилди!');
+}
+
+function backToAuth() {
+  document.getElementById('otp-card').style.display = 'none';
+  document.getElementById('auth-main').style.display = 'block';
+  pendingPhoneUser = null;
+  generatedOtp = null;
+}
+
+function logout() {
+  if (!confirm('Аккаунттан чыгасызбы?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  currentUser = null;
+  chatHistory = [];
+  pendingPhoneUser = null;
+  generatedOtp = null;
+  document.getElementById('chat-messages').innerHTML = `
+    <div class="msg-row ai">
+      <div class="msg-av ai-av"><img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="AI"></div>
+      <div><div class="bubble">Саламатсызбы! 👋 Мен Аксон клиникасынын AI жардамчысымын.</div><div class="msg-time">азыр</div></div>
+    </div>`;
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'block';
+  document.getElementById('g-dropdown').classList.remove('show');
+  document.getElementById('google-reg-form').style.display = 'none';
+  document.getElementById('or-div').style.display = 'flex';
+  document.getElementById('phone-login').style.display = 'block';
+  document.getElementById('otp-card').style.display = 'none';
+  document.getElementById('auth-main').style.display = 'block';
+  document.getElementById('phone-input').value = '';
+  document.getElementById('phone-name-input').value = '';
+}
+
+// ====== NAVIGATION ======
+function navigate(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const el = document.getElementById('screen-' + screen);
+  if (el) el.classList.add('active');
+  const navEl = document.querySelector('[data-screen="'+screen+'"]');
+  if (navEl) navEl.classList.add('active');
+  if (screen === 'my-appointments') renderAppointments();
+  closeSidebar();
+  window.scrollTo(0,0);
+}
+
+function openSidebar() {
+  document.getElementById('sidebar').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+// ====== APPOINTMENT ======
+function bookDoctor(doctor) {
+  navigate('appointment');
+  setTimeout(() => { document.getElementById('r-doctor').value = doctor; }, 100);
+}
+
+function submitAppointment() {
+  const name = document.getElementById('r-name').value.trim();
+  const phone = document.getElementById('r-phone').value.trim();
+  const doctor = document.getElementById('r-doctor').value;
+  const date = document.getElementById('r-date').value;
+  const time = document.getElementById('r-time').value;
+  if (!name||!phone||!doctor||!date||!time) { alert('Бардык талааларды толтуруңуз!'); return; }
+  const d = new Date(date);
+  const dateStr = d.toLocaleDateString('ky-KG',{year:'numeric',month:'long',day:'numeric'});
+  const appt = {name,phone,doctor,date,time,id:Date.now()};
+  appointments.push(appt);
+  localStorage.setItem(APPT_KEY, JSON.stringify(appointments));
+  document.getElementById('s-name').textContent = name;
+  document.getElementById('s-detail').textContent = doctor + ' · ' + dateStr + ' · ' + time;
+  document.getElementById('appt-form-wrap').style.display = 'none';
+  document.getElementById('appt-success').style.display = 'block';
+}
+
+function resetAppt() {
+  document.getElementById('r-doctor').value = '';
+  document.getElementById('r-date').value = '';
+  document.getElementById('r-time').value = '';
+  document.getElementById('r-complaint').value = '';
+  document.getElementById('appt-form-wrap').style.display = 'block';
+  document.getElementById('appt-success').style.display = 'none';
+}
+
+function renderAppointments() {
+  const list = document.getElementById('appt-list');
+  if (!appointments.length) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:14px;padding:20px 0">Азырынча жазылуu жок. Дарыгерге жазылыңыз!</div>';
+    return;
+  }
+  list.innerHTML = appointments.map(a => {
+    const d = new Date(a.date);
+    return `<div class="appt-card">
+      <div class="appt-date"><div class="aday">${d.getDate()}</div><div class="amon">${d.toLocaleDateString('ky-KG',{month:'short'})}</div></div>
+      <div class="appt-info"><h4>${a.doctor}</h4><p>${a.name} · ${a.time}</p></div>
+      <div class="appt-status">Ырасталды</div>
+    </div>`;
+  }).join('');
+}
+
+// ====== AI CHAT ======
+function getTime() { return new Date().toLocaleTimeString('ky-KG',{hour:'2-digit',minute:'2-digit'}); }
+
+function addMsg(text, role) {
+  const area = document.getElementById('chat-messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+  const isAI = role === 'ai';
+  if (isAI) {
+    row.innerHTML = `<div class="msg-av ai-av"><img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="AI"></div><div><div class="bubble">${text.replace(/\n/g,'<br>')}</div><div class="msg-time">${getTime()}</div></div>`;
+  } else {
+    const initials = currentUser ? currentUser.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() : 'К';
+    const color = currentUser?.color || '#1a56db';
+    row.innerHTML = `<div><div class="bubble">${text}</div><div class="msg-time" style="text-align:right">${getTime()}</div></div><div class="msg-av user-av" style="background:${color}">${initials}</div>`;
+  }
+  area.appendChild(row);
+  area.scrollTop = area.scrollHeight;
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-messages');
+  const row = document.createElement('div');
+  row.className = 'msg-row ai'; row.id = 'typing';
+  row.innerHTML = `<div class="msg-av ai-av"><img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="AI"></div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+  area.appendChild(row); area.scrollTop = area.scrollHeight;
+}
+function removeTyping() { const t=document.getElementById('typing'); if(t) t.remove(); }
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMsg(text, 'user');
+  chatHistory.push({role:'user', content:text});
+  showTyping();
+
+  const sys = `Сен "Аксон" медициналык борборунун AI жардамчысысың. Ош шаары, Кыргызстан.
+
+КЛИНИКА МААЛЫМАТЫ:
+- Толук аты: Клиника «Аксон»
+- Дарек: мкр. Толойкон, 23А/1, Ош шаары
+- Иш убактысы: Дүйшөмбү–Жума 08:00–17:00, Ишемби 09:00–15:00, Жекшемби — эс алуу
+- Кабыл алуу: алдын ала жазылуу менен гана
+- Төлөм: нак акча
+- Пациенттер: чоңдор гана
+- Автобус: №6, 8, 9, 43 · Маршрутка: №12, 101, 106, 112, 127, 129, 141, 146
+- Аялдама: «Микрорайон Толойкон»
+
+ДАРЫГЕРЛЕР:
+1. Жанибекова Гулдана Жанибековна — Невролог (Дүйш–Жума)
+2. Кулматов Суймонкул — Ревматолог, Кардиолог (Дүйш–Жума)
+3. Курбанов Мыктарбек — Терапевт (Дүйш–Жума)
+4. Маматов Айбек Мухтарович — Кардиолог (Дүйш–Жума)
+
+КЫЗМАТТАР: Кардиология, неврология, ревматология, терапия, гинекология, эндокринология, урология, ЭКГ, ЭхоКГ, УЗИ (голеностоп кошо), иглотерапия, мануалдык терапия, лабораториялык анализдер.
+
+ЖООП БЕРҮҮ ЭРЕЖЕЛЕРИ:
+- Дайыма кыргызча жооп бер
+- Кыска, так жана пайдалуу болсун
+- Медициналык диагноз коюбай, дарыгерге кайрылуunu сунуш кыл
+- Клиника жана ден соолук тематикасы боюнча гана жооп бер
+- Башка темаларда "Мен клиника жардамчысымын, медициналык суроолорго жооп берем" де
+- Эмоционалдуу жана жылуу мамиле жаса`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        system:sys,
+        messages:chatHistory.slice(-20)
+      })
+    });
+    if (!resp.ok) throw new Error('api_error');
+    const data = await resp.json();
+    removeTyping();
+    const reply = data.content?.[0]?.text || '';
+    if (reply) {
+      chatHistory.push({role:'assistant', content:reply});
+      addMsg(reply, 'ai');
+    } else { throw new Error('empty'); }
+  } catch(e) {
+    removeTyping();
+    const fallback = getLocalResponse(text);
+    if (fallback) {
+      chatHistory.push({role:'assistant', content:fallback});
+      addMsg(fallback, 'ai');
+    } else {
+      addMsg('Суроолоруңузга жооп берем! Дарыгерлер, иш убактысы, дарек же кызматтар жөнүндө сурасаңыз болот.', 'ai');
+    }
+  }
+}
+
+function getLocalResponse(q) {
+  const ql = q.toLowerCase();
+  if (/дарыгер|врач|доктор|специалист/.test(ql))
+    return 'Клиникабызда 4 дарыгер иштейт:\n\n👩‍⚕️ Жанибекова Гулдана — Невролог\n👨‍⚕️ Кулматов Суймонкул — Ревматолог/Кардиолог\n👨‍⚕️ Курбанов Мыктарбек — Терапевт\n👨‍⚕️ Маматов Айбек — Кардиолог\n\nДарыгерге жазылуу үчүн "Жазылуу" бөлүмүнө өтүңүз.';
+  if (/убакыт|иштей|саат|режим|schedule/.test(ql))
+    return 'Клиниканын иш убактысы:\n\n📅 Дүйшөмбү–Жума: 08:00–17:00\n📅 Ишемби: 09:00–15:00\n❌ Жекшемби: Эс алуу\n\nКабыл алуу алдын ала жазылуу менен гана.';
+  if (/дарек|кайда|адрес|жайгашкан|толойкон/.test(ql))
+    return '📍 Дарек: мкр. Толойкон, 23А/1, Ош шаары\n\nАвтобус: №6, 8, 9, 43\nМаршрутка: №12, 101, 106, 112, 127\nАялдама: «Микрорайон Толойкон»';
+  if (/кызмат|услуг|эмне|кандай/.test(ql))
+    return 'Клиникабыздын кызматтары:\n\n🏥 Кардиология, Неврология, Ревматология, Терапия\n🏥 Гинекология, Эндокринология, Урология\n\n🔬 ЭКГ, ЭхоКГ, УЗИ\n💉 Иглотерапия, Мануалдык терапия\n🧪 Лабораториялык анализдер';
+  if (/кардио|жүрөк|heart/.test(ql))
+    return '❤️ Кардиология боюнча:\n\n👨‍⚕️ Кулматов Суймонкул — Ревматолог/Кардиолог\n👨‍⚕️ Маматов Айбек Мухтарович — Кардиолог\n\nЭКГ жана ЭхоКГ жүргүзүлөт.';
+  if (/невро|баш|оору|уйку|anxiet/.test(ql))
+    return '🧠 Неврология боюнча:\n\n👩‍⚕️ Жанибекова Гулдана Жанибековна — Невролог\n\nБаш ооруу, уйку бузулуу, тынчсыздануу, чарчоо маселелерин чечет.';
+  if (/төлөм|баасы|нак|цена|price/.test(ql))
+    return '💳 Төлөм нак акча менен гана кабыл алынат. Конкреттүү баалар жөнүндө клиникага кайрылыңыз.';
+  if (/жазыл|запись|appoin/.test(ql))
+    return '📋 Дарыгерге жазылуу үчүн:\n1. "Жазылуу" бөлүмүнө өтүңүз\n2. Дарыгерди тандаңыз\n3. Күнүн жана убактысын тандаңыз\n\nКабыл алуу алдын ала жазылуу менен гана!';
+  if (/салам|саламат|hello|привет/.test(ql))
+    return 'Саламатсызбы! 😊 Мен Аксон клиникасынын AI жардамчысымын. Дарыгерлер, иш убактысы, кызматтар же жазылуу жөнүндө суроо бериңиз!';
+  return null;
+}
+
+function sendChip(text) {
+  document.getElementById('chat-input').value = text;
+  sendMessage();
+}
+
+function clearChat() {
+  chatHistory = [];
+  document.getElementById('chat-messages').innerHTML = `
+    <div class="msg-row ai">
+      <div class="msg-av ai-av"><img src="https://ydoc.kg/media/photo/osh/lpuimage/5680/8862-klinika-_akson_cropped_logo.jpg" alt="AI"></div>
+      <div><div class="bubble">Саламатсызбы! 👋 Чат тазаланды. Жаңы суроо бериңиз!</div><div class="msg-time">азыр</div></div>
+    </div>`;
+}
+
+document.getElementById('chat-input').addEventListener('keydown', function(e) {
+  if (e.key==='Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+</script>
+</body>
+</html>
