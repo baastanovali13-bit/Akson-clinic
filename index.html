@@ -800,17 +800,15 @@ function openDocProfile(docId){
 // ===== APPOINTMENT =====
 function bookDoctor(str){navigate('appointment');setTimeout(()=>{document.getElementById('r-doctor').value=str;},100)}
  // ===== TELEGRAM CONFIG =====
-const WORKER_URL = "https://akson-bot.baastanovali13-bit.workers.dev"; // сенин Worker домениң
+const WORKER_URL = "https://akson-bot.baastanovali13-bit.workers.dev";
 const TG_CHAT = "8549766446";
-
- async function sendTelegram(data){
-  try{
-    await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(data) // текст эмес, объектти жөнөтөбүз
-    });
-  }catch(e){console.log('TG error:',e)}
+     
+async function sendTelegram(data){
+  fetch(WORKER_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  }).catch(e=>console.log('TG error:',e))
 }
 
 function submitAppointment(){
@@ -827,7 +825,6 @@ function submitAppointment(){
   sendTelegram({name, phone, doctor, date, time, complaint});
 
   // Telegram билдирүүсү
-   
   document.getElementById('s-name').textContent=name;
   document.getElementById('s-detail').textContent=doctor+' · '+ds+' · '+time;
   document.getElementById('appt-form-wrap').style.display='none';
