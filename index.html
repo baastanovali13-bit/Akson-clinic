@@ -257,7 +257,7 @@ a{text-decoration:none;color:inherit}
       </div>
       <div class="form-group"><label class="form-label">Сырсөз (6 цифра)</label><input type="password" class="form-input" id="pr-pass" placeholder="••••••" maxlength="6" inputmode="numeric"></div>
       <div class="err-msg" id="pr-err">Ката</div>
-      <button class="primary-btn" onclick="patientRegStep1()">SMS код алуу</button>
+      <button class="primary-btn" onclick="patientRegDirect()">Улантуу</button>
       <button class="back-link" onclick="goLanding()">← Башкы бетке кайтуу</button>
     </div>
   </div>
@@ -316,7 +316,7 @@ a{text-decoration:none;color:inherit}
       </div>
       <div class="form-group"><label class="form-label">Сырсөз (6 цифра)</label><input type="password" class="form-input" id="dr-pass" placeholder="••••••" maxlength="6" inputmode="numeric"></div>
       <div class="err-msg" id="dr-err">Ката</div>
-      <button class="primary-btn" onclick="doctorRegStep1()">SMS код алуу</button>
+      <button class="primary-btn" onclick="doctorRegDirect()">Улантуу</button>
       <button class="back-link" onclick="goLanding()">← Башкы бетке кайтуу</button>
     </div>
   </div>
@@ -619,7 +619,8 @@ function patientLogin(){
   err.style.display='none';
   currentUser={...p,role:'patient'};saveSession(currentUser);bootApp();
 }
-function patientRegStep1(){
+function patientRegStep1(){}
+function patientRegDirect(){
   const name=document.getElementById('pr-name').value.trim();
   const ph=document.getElementById('pr-phone').value.trim();
   const ps=document.getElementById('pr-pass').value.trim();
@@ -629,13 +630,10 @@ function patientRegStep1(){
   const full='+996'+ph;
   if(getPatients().find(x=>x.phone===full)){err.textContent='❌ Бул номер катталган!';err.style.display='block';return;}
   err.style.display='none';
-  pendingOtp=String(Math.floor(1000+Math.random()*9000));
-  pendingReg={role:'patient',name,phone:full,pass:ps,color:'#1a56db',id:'pat_'+Date.now()};
-  otpTarget='patient';
-  document.getElementById('otp-sub').textContent=full+' номерине код жиберилди';
-  document.getElementById('otp-code-show').innerHTML=`Демо: Сиздин кодуңуз — <strong style="font-size:18px;letter-spacing:4px">${pendingOtp}</strong>`;
-  document.getElementById('otp-val').value='';document.getElementById('otp-err').style.display='none';
-  showScreen('otp-screen');
+  const newPat={role:'patient',name,phone:full,pass:ps,color:'#1a56db',id:'pat_'+Date.now()};
+  const p=getPatients();p.push(newPat);savePatients(p);
+  sendTelegram(`🆕 <b>Жаңы пациент катталды!</b>\n\n👤 <b>Аты:</b> ${name}\n📞 <b>Телефон:</b> ${full}`);
+  currentUser={...newPat};saveSession(currentUser);bootApp();
 }
 
 // ===== DOCTOR AUTH =====
@@ -654,7 +652,8 @@ function doctorLogin(){
   err.style.display='none';
   currentUser={...d,role:'doctor'};saveSession(currentUser);bootApp();
 }
-function doctorRegStep1(){
+function doctorRegStep1(){}
+function doctorRegDirect(){
   const name=document.getElementById('dr-name').value.trim();
   const spec=document.getElementById('dr-spec').value;
   const ph=document.getElementById('dr-phone').value.trim();
@@ -667,13 +666,10 @@ function doctorRegStep1(){
   err.style.display='none';
   const ini=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   const color=COLORS[Math.floor(Math.random()*COLORS.length)];
-  pendingOtp=String(Math.floor(1000+Math.random()*9000));
-  pendingReg={role:'doctor',name,spec,phone:full,pass:ps,color,initials:ini,id:'doc_'+Date.now()};
-  otpTarget='doctor';
-  document.getElementById('otp-sub').textContent=full+' номерине код жиберилди';
-  document.getElementById('otp-code-show').innerHTML=`Демо: Сиздин кодуңуз — <strong style="font-size:18px;letter-spacing:4px">${pendingOtp}</strong>`;
-  document.getElementById('otp-val').value='';document.getElementById('otp-err').style.display='none';
-  showScreen('otp-screen');
+  const newDoc={role:'doctor',name,spec,phone:full,pass:ps,color,initials:ini,id:'doc_'+Date.now()};
+  const d=getDoctors();d.push(newDoc);saveDoctors(d);
+  sendTelegram(`👨‍⚕️ <b>Жаңы дарыгер катталды!</b>\n\n👤 <b>Аты:</b> ${name}\n🩺 <b>Адистиги:</b> ${spec}\n📞 <b>Телефон:</b> ${full}`);
+  currentUser={...newDoc};saveSession(currentUser);bootApp();
 }
 
 // ===== OTP =====
