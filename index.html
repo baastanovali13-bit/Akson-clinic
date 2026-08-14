@@ -683,8 +683,13 @@ function doctorRegStep1(){
 function verifyOtp(){
   if(document.getElementById('otp-val').value.trim()!==pendingOtp){document.getElementById('otp-err').style.display='block';document.getElementById('otp-val').value='';return;}
   document.getElementById('otp-err').style.display='none';
-  if(otpTarget==='patient'){const p=getPatients();p.push(pendingReg);savePatients(p);}
-  else{const d=getDoctors();d.push(pendingReg);saveDoctors(d);}
+  if(otpTarget==='patient'){
+    const p=getPatients();p.push(pendingReg);savePatients(p);
+    sendTelegram(`🆕 <b>Жаңы пациент катталды!</b>\n\n👤 <b>Аты:</b> ${pendingReg.name}\n📞 <b>Телефон:</b> ${pendingReg.phone}`);
+  } else {
+    const d=getDoctors();d.push(pendingReg);saveDoctors(d);
+    sendTelegram(`👨‍⚕️ <b>Жаңы дарыгер катталды!</b>\n\n👤 <b>Аты:</b> ${pendingReg.name}\n🩺 <b>Адистиги:</b> ${pendingReg.spec}\n📞 <b>Телефон:</b> ${pendingReg.phone}`);
+  }
   currentUser={...pendingReg};saveSession(currentUser);
   pendingReg=null;pendingOtp=null;otpTarget=null;
   bootApp();
@@ -801,6 +806,20 @@ function openDocProfile(docId){
 
 // ===== APPOINTMENT =====
 function bookDoctor(str){navigate('appointment');setTimeout(()=>{document.getElementById('r-doctor').value=str;},100)}
+// ===== TELEGRAM CONFIG =====
+const TG_TOKEN = '8784906435:AAEr31-ayhzaugjbuF71IIkUSDrn7YlX1Jk';
+const TG_CHAT  = '8549766446';
+
+async function sendTelegram(text){
+  try{
+    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:TG_CHAT, text, parse_mode:'HTML'})
+    });
+  }catch(e){console.log('TG error:',e);}
+}
+
 function submitAppointment(){
   const name=document.getElementById('r-name').value.trim();
   const phone=document.getElementById('r-phone').value.trim();
@@ -812,6 +831,18 @@ function submitAppointment(){
   const ds=new Date(date).toLocaleDateString('ky-KG',{year:'numeric',month:'long',day:'numeric'});
   const appt={id:'appt_'+Date.now(),patientId:currentUser?.id||'guest',name,phone,doctor,date,time,complaint};
   const appts=getAppts();appts.push(appt);saveAppts(appts);
+
+  // Telegram билдирүүсү
+  const msg=`🏥 <b>Жаңы жазылуу! — Аксон Клиника</b>\n\n`+
+    `👤 <b>Аты-жөнү:</b> ${name}\n`+
+    `📞 <b>Телефон:</b> ${phone}\n`+
+    `👨‍⚕️ <b>Дарыгер:</b> ${doctor}\n`+
+    `📅 <b>Күнү:</b> ${ds}\n`+
+    `⏰ <b>Убактысы:</b> ${time}\n`+
+    (complaint?`💬 <b>Даттануу:</b> ${complaint}\n`:'')+
+    `\n🔗 Аксон Клиника сайты`;
+  sendTelegram(msg);
+
   document.getElementById('s-name').textContent=name;
   document.getElementById('s-detail').textContent=doctor+' · '+ds+' · '+time;
   document.getElementById('appt-form-wrap').style.display='none';
