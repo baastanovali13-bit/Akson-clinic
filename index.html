@@ -1,4 +1,4 @@
-   <!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="ky">
 <head>
 <meta charset="UTF-8">
@@ -803,12 +803,12 @@ function bookDoctor(str){navigate('appointment');setTimeout(()=>{document.getEle
 const WORKER_URL = "https://akson-bot.baastanovali13-bit.workers.dev"; // сенин Worker домениң
 const TG_CHAT = "8549766446";
 
-async function sendTelegram(text){
+ async function sendTelegram(data){
   try{
     await fetch(WORKER_URL, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({name: name, phone: phone, time: time, text: text})
+      body: JSON.stringify(data) // текст эмес, объектти жөнөтөбүз
     });
   }catch(e){console.log('TG error:',e)}
 }
@@ -824,18 +824,10 @@ function submitAppointment(){
   const ds=new Date(date).toLocaleDateString('ky-KG',{year:'numeric',month:'long',day:'numeric'});
   const appt={id:'appt_'+Date.now(),patientId:currentUser?.id||'guest',name,phone,doctor,date,time,complaint};
   const appts=getAppts();appts.push(appt);saveAppts(appts);
+  sendTelegram({name, phone, doctor, date, time, complaint});
 
   // Telegram билдирүүсү
-  const msg=`🏥 <b>Жаңы жазылуу! — Аксон Клиника</b>\n\n`+
-    `👤 <b>Аты-жөнү:</b> ${name}\n`+
-    `📞 <b>Телефон:</b> ${phone}\n`+
-    `👨‍⚕️ <b>Дарыгер:</b> ${doctor}\n`+
-    `📅 <b>Күнү:</b> ${ds}\n`+
-    `⏰ <b>Убактысы:</b> ${time}\n`+
-    (complaint?`💬 <b>Даттануу:</b> ${complaint}\n`:'')+
-    `\n🔗 Аксон Клиника сайты`;
-  sendTelegram(msg);
-
+   
   document.getElementById('s-name').textContent=name;
   document.getElementById('s-detail').textContent=doctor+' · '+ds+' · '+time;
   document.getElementById('appt-form-wrap').style.display='none';
