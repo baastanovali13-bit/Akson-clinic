@@ -800,14 +800,14 @@ function openDocProfile(docId){
 // ===== APPOINTMENT =====
 function bookDoctor(str){navigate('appointment');setTimeout(()=>{document.getElementById('r-doctor').value=str;},100)}
  // ===== TELEGRAM CONFIG =====
-const WORKER_URL = "https://akson-bot.baastanovali13-bit.workers.dev";
+ const WORKER_URL = "https://tg-forwarder.alinur-work.workers.dev";
 const TG_CHAT = "8549766446";
-     
+
 async function sendTelegram(data){
   fetch(WORKER_URL, {
     method: 'POST',
     headers: {'Content-Type':'application/json'},
-    body: JSON.stringify(data)
+    body: JSON.stringify({...data, chat_id: TG_CHAT})
   }).catch(e=>console.log('TG error:',e))
 }
 
