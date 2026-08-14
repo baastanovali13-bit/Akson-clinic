@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="ky">
 <head>
 <meta charset="UTF-8">
@@ -806,7 +806,7 @@ function openDocProfile(docId){
 
 // ===== APPOINTMENT =====
 function bookDoctor(str){navigate('appointment');setTimeout(()=>{document.getElementById('r-doctor').value=str;},100)}
-// ===== TELEGRAM CONFIG =====
+ // ===== TELEGRAM CONFIG =====
 const TG_TOKEN = '8784906435:AAEr31-ayhzaugjbuF71IIkUSDrn7YlX1Jk';
 const TG_CHAT  = '8549766446';
 
@@ -819,7 +819,6 @@ async function sendTelegram(text){
     });
   }catch(e){console.log('TG error:',e);}
 }
-
 function submitAppointment(){
   const name=document.getElementById('r-name').value.trim();
   const phone=document.getElementById('r-phone').value.trim();
@@ -1029,6 +1028,8 @@ function logout(){
   document.getElementById('main-app').style.display='none';
   showScreen('landing-screen');
 }
+
+ 
 </script>
 </body>
 </html>
